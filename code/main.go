@@ -1,7 +1,6 @@
 package main
 
 /*
-   #include <windows.h>
    #include <stdlib.h>
    #include <string.h>
 */
@@ -47,7 +46,7 @@ func GetResponse( r *ResponseStruct ) string {
 
 
 //export load
-func load(h C.HGLOBAL, length C.long ) C.BOOL {
+func load(h unsafe.Pointer, length C.long ) C.int {
     fmt.Println( "load NihonKokkai" )
     Directory = C.GoStringN(( *C.char )( unsafe.Pointer( h )), ( C.int )( length ))
     fmt.Println( Directory  )
@@ -63,22 +62,22 @@ func load(h C.HGLOBAL, length C.long ) C.BOOL {
     ////国会回収
     go do()
 
-	C.GlobalFree( h )
-	return C.TRUE
+	freeHGlobal( h )
+	return 1
 }
 
 
 //export unload
-func unload() bool {
+func unload() C.int {
     fmt.Println( "unload NihonKokkai" )
-	return true
+	return 1
 }
 
 
 //export request
-func request( h C.HGLOBAL, length *C.long ) C.HGLOBAL {
+func request( h unsafe.Pointer, length *C.long ) unsafe.Pointer {
 	RequestText := C.GoStringN(( *C.char )( unsafe.Pointer( h )), ( C.int )( *length ))
-	C.GlobalFree( h )
+	freeHGlobal( h )
 
 
     Value           := ""
@@ -153,7 +152,7 @@ func request( h C.HGLOBAL, length *C.long ) C.HGLOBAL {
     defer C.free( unsafe.Pointer( res_buf ))
 
 	res_size := C.strlen( res_buf )
-	ret      := C.GlobalAlloc( C.GPTR , ( C.SIZE_T )( res_size ))
+	ret      := allocHGlobal( uintptr( res_size ))
 	C.memcpy(( unsafe.Pointer )( ret ) , ( unsafe.Pointer )( res_buf ) , res_size )
 	*length = ( C.long )( res_size )
 	return ret

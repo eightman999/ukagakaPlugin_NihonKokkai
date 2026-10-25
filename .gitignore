@@ -19,3 +19,8 @@ plugin.dat.bak
 yaya_variable.cfg
 history.dat
 var.txt
+
+# Ourin（macOS）向けビルド生成物
+/build/
+/main.dylib
+/libmain.dylib

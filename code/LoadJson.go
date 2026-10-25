@@ -3,6 +3,7 @@ package main
 import (
     "fmt"
     "os"
+    "path/filepath"
     "encoding/json"
 )
 
@@ -18,7 +19,7 @@ type KokkaiConfig struct {
 var Config KokkaiConfig
 
 func LoadJson(){
-	JsonFile, err := os.Open( Directory + "/Config.json")
+	JsonFile, err := os.Open( filepath.Join( Directory , "Config.json" ))
 	if err != nil {
         fmt.Println( err )
 	}
